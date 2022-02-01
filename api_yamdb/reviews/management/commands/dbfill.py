@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand
 
 import csv
 
+from reviews.models import Category, Comments
+
 
 class Command(BaseCommand):
     """Management-команда наполняющей базу данных тестовыми данными
@@ -9,8 +11,8 @@ class Command(BaseCommand):
     """
     help = ('Helps to fill the database with test '
             'data from "/api_yamdb/static/data"')
-    titles_list = ('category.csv', 'comments.csv', 'genre_title.csv',
-                   'genre.csv', 'review.csv', 'titles.csv', 'users.csv',)
+    titles_list = ('category', 'comments', 'genre_title',
+                   'genre', 'review', 'titles', 'users',)
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -21,15 +23,37 @@ class Command(BaseCommand):
         self.stdout.write(
             f'Work with files: {titles}'
         )
-        data = []
         for title in titles:
-            with open(f'static/data/{title}', encoding='utf-8') as csvfile:
-                reader = csv.reader(csvfile)
-                for row in reader:
-                    data.append(row[0])
-                    data.append(row[1])
-                    data.append(row[2])
-        self.stdout.write(f'Read Data: {data}')
+            with open(f'static/data/{title}.csv', encoding='utf-8') as csvfile:
+                reader = csv.reader(csvfile, delimiter=',')
+                # column_names = []
+                # column_count = 0
+                # row_count = 0
+                # for line_num, line in enumerate(reader):
+                #     if line_num == 0:
+                #         for i in range(len(line)):
+                #             column_names.append(line[i])
+                #         column_count = len(line)
+                for row_num, row in enumerate(reader):
+                    if row_num == 0:
+                        continue
+                    if title == 'category':
+                        Category.objects.get_or_create(
+                            id=row[0],
+                            name=row[1],
+                            slug=row[2],
+                        )
+                    elif title == 'comments':
+                        Comments.objects.get_or_create(
+                            id=row[0],
+                            review_id=row[1],
+                            text=row[2],
+                            author=row[3],
+                            pub_date=row[4]
+                        )
+                # self.stdout.write(
+                #     f'Столбцы: {column_names}, количество столбцов: {column_count}, количество записей: {row_count}'
+                # )
 
     def handle(self, *args, **options):
         if options['file_name'] is None:
