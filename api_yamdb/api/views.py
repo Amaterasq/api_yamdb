@@ -1,5 +1,9 @@
 from rest_framework import viewsets
 
+from api.serializers import TitleSerializer
+from reviews.models import Titles
+
 
 class TitleViewSet(viewsets.ModelViewSet):
-    pass
+    serializer_class = TitleSerializer
+    queryset = Titles.objects.all()
