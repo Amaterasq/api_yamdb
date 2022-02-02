@@ -77,7 +77,7 @@ python -m venv venv
 ```
 
 ```
-source venv/Script/activate
+source venv/Scripts/activate
 ```
 Обновить версию pip
 ```
