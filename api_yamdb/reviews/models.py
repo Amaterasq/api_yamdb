@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models.expressions import RawSQL
+
+import datetime
 
 
 class User(AbstractUser):
@@ -60,6 +62,7 @@ class Titles(models.Model):
         default='Без категории',
         related_name='titles'
     )
+    genre = models.ManyToManyField(Genre, through='GenreTitle')
 
     def __str__(self):
         return self.name
@@ -67,14 +70,14 @@ class Titles(models.Model):
 
 class GenreTitle(models.Model):
     title_id = models.ForeignKey(
-        'Titles',
+        Titles,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
         related_name='title'
     )
     genre_id = models.ForeignKey(
-        'Genre',
+        Genre,
         on_delete=models.SET_DEFAULT,
         null=True,
         default='Без жанра',
