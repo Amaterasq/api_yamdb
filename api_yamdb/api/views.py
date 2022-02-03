@@ -1,20 +1,20 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, filters, mixins
 from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework import filters
-from rest_framework import mixins
+from rest_framework import 
 
-from reviews.models import Review, Comments, Titles
-from .serializers import ReviewSerializer, CommentsSerializer
+from django.shortcuts import get_object_or_404
+
 # from .permissions import IsOwnerOrReadOnly
+from api.serializers import TitleSerializer, ReviewSerializer, CommentsSerializer
+from reviews.models import Titles, Review, Comments,
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    pass
+
+    serializer_class = TitleSerializer
+    queryset = Titles.objects.all()
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
