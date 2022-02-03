@@ -1,19 +1,42 @@
 from rest_framework import viewsets, filters, mixins
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-from rest_framework.pagination import LimitOffsetPagination
-
+from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
-# from .permissions import IsOwnerOrReadOnly
-from api.serializers import TitleSerializer, ReviewSerializer, CommentsSerializer
-from reviews.models import Titles, Review, Comments
+from api.serializers import (
+    TitleSerializer, ReviewSerializer, CommentsSerializer, CategorySerializer
+)
+from reviews.models import Category, Genre, Titles, Review
+from api.filters import TitlesFilter
 
 
 class TitleViewSet(viewsets.ModelViewSet):
 
     serializer_class = TitleSerializer
     queryset = Titles.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = TitlesFilter
+
+
+class CategoryViewSet(mixins.ListModelMixin,
+                      mixins.CreateModelMixin,
+                      mixins.DestroyModelMixin,
+                      viewsets.GenericViewSet):
+
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
+
+
+class GenresViewSet(mixins.ListModelMixin,
+                    mixins.CreateModelMixin,
+                    mixins.DestroyModelMixin,
+                    viewsets.GenericViewSet):
+
+    serializer_class = CategorySerializer
+    queryset = Genre.objects.all()
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
