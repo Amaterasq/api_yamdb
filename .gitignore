@@ -1,7 +1,8 @@
-# Byte-compiled / optimized / DLL files
+﻿# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+api_yamdb/sent_emails
 
 # C extensions
 *.so
