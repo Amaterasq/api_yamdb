@@ -5,7 +5,7 @@ from api.views import TitleViewSet, CommentsViewSet
 
 
 router = DefaultRouter()
-# router.register(r'titles', TitleViewSet, basename='titles')
+router.register(r'titles', TitleViewSet, basename='titles')
 router.register(r'titles/?P<title_id>/reviews/?P<review_id>/comments',
                 CommentsViewSet, basename='comments')
 urlpatterns = [
