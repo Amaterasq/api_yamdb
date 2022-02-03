@@ -84,9 +84,6 @@ class GenreTitle(models.Model):
         related_name='genre'
     )
 
-    # def __str__(self):
-    #     return self.name
-
 
 class Review(models.Model):
     title_id = models.ForeignKey(

@@ -33,7 +33,6 @@ class ReviewSerializer(serializers.ModelSerializer):
                 message='Отзыв на публикацию уже есть!'
             )
         ]
-        fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
