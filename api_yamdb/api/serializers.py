@@ -25,7 +25,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        exclude = ('id',)
+        exclude = ('title_id',)
         validators = [
             UniqueTogetherValidator(
                 queryset=Review.objects.all(),
