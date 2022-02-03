@@ -1,8 +1,39 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
+
 from django.db.models import Avg
 
+from reviews.models import Review, Titles, Genre, Category, Comments
 
-from reviews.models import Review, Titles, Genre, Category
+
+class CommentsSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+        default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Comments
+        fields = '__all__'
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='username',
+        default=serializers.CurrentUserDefault())
+
+    class Meta:
+        model = Review
+        exclude = ('id',)
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Review.objects.all(),
+                fields=['title_id', 'author'],
+                message='Отзыв на публикацию уже есть!'
+            )
+        ]
+        fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
