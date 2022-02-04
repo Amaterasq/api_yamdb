@@ -7,13 +7,13 @@ from django.shortcuts import get_object_or_404
 
 # from .permissions import IsOwnerOrReadOnly
 from api.serializers import TitleSerializer, ReviewSerializer, CommentsSerializer
-from reviews.models import Titles, Review, Comments
+from reviews.models import Title, Review, Comment
 
 
 class TitleViewSet(viewsets.ModelViewSet):
 
     serializer_class = TitleSerializer
-    queryset = Titles.objects.all()
+    queryset = Title.objects.all()
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
@@ -40,11 +40,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
     #                       IsOwnerOrReadOnly)
 
     def get_queryset(self):
-        title = get_object_or_404(Titles, id=self.kwargs.get('title_id'))
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
         return title.reviews.all()
 
     def perform_create(self, serializer):
         serializer.save(
             author=self.request.user,
-            title=get_object_or_404(Titles, id=self.kwargs.get('title_id'))
+            title=get_object_or_404(Title, id=self.kwargs.get('title_id'))
         )

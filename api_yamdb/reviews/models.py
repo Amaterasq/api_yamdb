@@ -1,9 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db.models.expressions import RawSQL
+# from django.db.models.expressions import RawSQL
 
 import datetime
+
+
+def current_year():
+    return datetime.date.today().year
 
 
 class User(AbstractUser):
@@ -44,17 +48,19 @@ class Category(models.Model):
         return self.name
 
 
-class Titles(models.Model):
+class Title(models.Model):
     name = models.CharField(max_length=200,
                             blank=False,
                             null=False)
     year = models.IntegerField(
         ('year'),
         validators=[MinValueValidator(0),
-                    MaxValueValidator(datetime.date.today().year)],
+                    MaxValueValidator(current_year())],
         blank=False,
         null=False
     )
+    description = models.TextField(null=True,
+                                   default='Без описания',)
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_DEFAULT,
@@ -70,7 +76,7 @@ class Titles(models.Model):
 
 class GenreTitle(models.Model):
     title_id = models.ForeignKey(
-        Titles,
+        Title,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -87,7 +93,7 @@ class GenreTitle(models.Model):
 
 class Review(models.Model):
     title_id = models.ForeignKey(
-        'Titles',
+        'Title',
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -118,7 +124,7 @@ class Review(models.Model):
         ]
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     review_id = models.ForeignKey('Review',
                                   on_delete=models.CASCADE,
                                   blank=False,

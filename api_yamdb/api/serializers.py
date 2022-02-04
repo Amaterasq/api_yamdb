@@ -3,7 +3,7 @@ from rest_framework.validators import UniqueTogetherValidator
 
 from django.db.models import Avg
 
-from reviews.models import Review, Titles, Genre, Category, Comments
+from reviews.models import Review, Title, Genre, Category, Comment
 
 
 class CommentsSerializer(serializers.ModelSerializer):
@@ -13,7 +13,7 @@ class CommentsSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault())
 
     class Meta:
-        model = Comments
+        model = Comment
         fields = ('id', 'text', 'author', 'pub_date',)
 
 
@@ -56,7 +56,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = '__all__'
-        model = Titles
+        model = Title
 
     def get_rating(self, obj):
         list = Review.objects.filter(title_id=obj.id)
