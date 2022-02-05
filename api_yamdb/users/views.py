@@ -1,7 +1,7 @@
 import uuid
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, filters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
@@ -71,11 +71,14 @@ class UsersViewSet(viewsets.ModelViewSet):
     '''
     Получение всех юзеров от имени админа.
     Создание/изменение/удаление/получение юзера по
-    username вроде должно работать, только фильтр добавть надо.
+    username вроде должно работать.
     '''
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'username'
     permission_classes = [IsAdmin]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['user__username', ]
 
 
 class UserDetailPach(APIView):

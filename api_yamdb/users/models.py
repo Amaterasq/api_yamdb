@@ -25,7 +25,7 @@ class User(AbstractUser):
     confirmation_code = models.CharField(max_length=50, default='1')
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
+    REQUIRED_FIELDS = ['email', 'username']
 
     USER_ROLE = (
         ('user', 'user'),
@@ -34,5 +34,4 @@ class User(AbstractUser):
     )
 
     role = models.CharField(max_length=9, choices=USER_ROLE, default='user')
-
     objects = CustomUserManager()
