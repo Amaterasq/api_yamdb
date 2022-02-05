@@ -5,6 +5,10 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 import datetime
 
 
+def current_year():
+    return datetime.date.today().year
+
+
 class User(AbstractUser):
     role = models.CharField(max_length=100,
                             blank=False,
@@ -52,10 +56,12 @@ class Titles(models.Model):
     year = models.IntegerField(
         ('year'),
         validators=[MinValueValidator(0),
-                    MaxValueValidator(datetime.date.today().year)],
+                    MaxValueValidator(current_year())],
         blank=False,
         null=False
     )
+    description = models.TextField(null=True,
+                                   default='Без описания',)
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_DEFAULT,
@@ -74,7 +80,7 @@ class Titles(models.Model):
 
 class GenreTitle(models.Model):
     title_id = models.ForeignKey(
-        Titles,
+        Title,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -88,13 +94,10 @@ class GenreTitle(models.Model):
         related_name='genre'
     )
 
-    # def __str__(self):
-    #     return self.name
-
 
 class Review(models.Model):
     title_id = models.ForeignKey(
-        'Titles',
+        'Title',
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -125,7 +128,7 @@ class Review(models.Model):
         ]
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     review_id = models.ForeignKey('Review',
                                   on_delete=models.CASCADE,
                                   blank=False,

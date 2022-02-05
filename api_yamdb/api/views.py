@@ -2,6 +2,7 @@ from rest_framework import viewsets, filters, mixins
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
+from reviews.models import Title, Review, Comment
 from api.serializers import (
     TitleSerializer, ReviewSerializer, CommentsSerializer, CategorySerializer
 )
@@ -63,11 +64,11 @@ class ReviewViewSet(viewsets.ModelViewSet):
     #                       IsOwnerOrReadOnly)
 
     def get_queryset(self):
-        title = get_object_or_404(Titles, id=self.kwargs.get('title_id'))
+        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
         return title.reviews.all()
 
     def perform_create(self, serializer):
         serializer.save(
             author=self.request.user,
-            title=get_object_or_404(Titles, id=self.kwargs.get('title_id'))
+            title=get_object_or_404(Title, id=self.kwargs.get('title_id'))
         )

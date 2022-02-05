@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import User, Genre, Category
-from .models import Titles, GenreTitle, Review, Comments
+from .models import Title, GenreTitle, Review, Comment
 
 
 class GenreAdmin(admin.ModelAdmin):
@@ -18,8 +18,8 @@ class CategoryAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-class TitlesAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'name', 'year', 'category',)
+class TitleAdmin(admin.ModelAdmin):
+    list_display = ('pk', 'name', 'year', 'description', 'category',)
     list_editable = ('category',)
     search_fields = ('name',)
     list_filter = ('year',)
@@ -34,7 +34,7 @@ class ReviewAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-class CommentsAdmin(admin.ModelAdmin):
+class CommentAdmin(admin.ModelAdmin):
     list_display = ('pk', 'review_id', 'text', 'author', 'pub_date',)
     search_fields = ('review_id', 'author', 'pub_date',)
     list_editable = ('review_id',)
@@ -52,8 +52,8 @@ class GenreTitleAdmin(admin.ModelAdmin):
 
 admin.site.register(Genre, GenreAdmin)
 admin.site.register(Category, CategoryAdmin)
-admin.site.register(Titles, TitlesAdmin)
+admin.site.register(Title, TitleAdmin)
 admin.site.register(GenreTitle, GenreTitleAdmin)
 admin.site.register(Review, ReviewAdmin)
-admin.site.register(Comments, CommentsAdmin)
+admin.site.register(Comment, CommentAdmin)
 admin.site.register(User)
