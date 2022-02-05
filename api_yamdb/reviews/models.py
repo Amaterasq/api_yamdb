@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 import datetime
@@ -9,15 +9,39 @@ def current_year():
     return datetime.date.today().year
 
 
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **kwargs):
+        user = self.model(email=email, **kwargs)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, email, password, **kwargs):
+        user = self.model(
+            email=email, is_staff=True, is_superuser=True, **kwargs
+        )
+        user.set_password(password)
+        user.save()
+        return user
+
+
 class User(AbstractUser):
-    role = models.CharField(max_length=100,
-                            blank=False,
-                            null=False
-                            )
-    bio = models.TextField(
-        'Биография',
-        blank=True
+    username = models.TextField(max_length=100, unique=True)
+    email = models.EmailField(unique=True)
+    bio = models.TextField(max_length=1000, blank=True)
+    confirmation_code = models.CharField(max_length=50, default='1')
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email']
+
+    USER_ROLE = (
+        ('user', 'user'),
+        ('moderator', 'moderator'),
+        ('admin', 'admin'),
     )
+
+    role = models.CharField(max_length=9, choices=USER_ROLE, default='user')
+    objects = CustomUserManager()
 
 
 class Genre(models.Model):
