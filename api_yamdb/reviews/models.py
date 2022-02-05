@@ -1,7 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-import datetime
 from django.core.validators import MaxValueValidator, MinValueValidator
+
+import datetime
+
+
+def current_year():
+    return datetime.date.today().year
 
 
 class User(AbstractUser):
@@ -16,12 +21,13 @@ class User(AbstractUser):
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=200,
+    name = models.CharField(max_length=256,
                             unique=True,
                             blank=False,
                             null=False
                             )
-    slug = models.SlugField(unique=True,
+    slug = models.SlugField(max_length=50,
+                            unique=True,
                             blank=False,
                             null=False)
 
@@ -30,11 +36,12 @@ class Genre(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200,
+    name = models.CharField(max_length=256,
                             unique=True,
                             blank=False,
                             null=False)
-    slug = models.SlugField(unique=True,
+    slug = models.SlugField(max_length=50,
+                            unique=True,
                             blank=False,
                             null=False)
 
@@ -43,16 +50,18 @@ class Category(models.Model):
 
 
 class Titles(models.Model):
-    name = models.CharField(max_length=200,
+    name = models.CharField(max_length=256,
                             blank=False,
                             null=False)
     year = models.IntegerField(
         ('year'),
         validators=[MinValueValidator(0),
-                    MaxValueValidator(datetime.date.today().year)],
+                    MaxValueValidator(current_year())],
         blank=False,
         null=False
     )
+    description = models.TextField(null=True,
+                                   default='Без описания',)
     category = models.ForeignKey(
         'Category',
         on_delete=models.SET_DEFAULT,
@@ -60,6 +69,10 @@ class Titles(models.Model):
         default='Без категории',
         related_name='titles'
     )
+    genre = models.ManyToManyField(Genre, through='GenreTitle')
+    description = models.CharField(max_length=256,
+                                   blank=True,
+                                   null=True)
 
     def __str__(self):
         return self.name
@@ -67,27 +80,24 @@ class Titles(models.Model):
 
 class GenreTitle(models.Model):
     title_id = models.ForeignKey(
-        'Titles',
+        Title,
         on_delete=models.CASCADE,
         blank=False,
         null=False,
         related_name='title'
     )
     genre_id = models.ForeignKey(
-        'Genre',
+        Genre,
         on_delete=models.SET_DEFAULT,
         null=True,
         default='Без жанра',
         related_name='genre'
     )
 
-    def __str__(self):
-        return self.name
-
 
 class Review(models.Model):
     title_id = models.ForeignKey(
-        'Titles',
+        'Title',
         on_delete=models.CASCADE,
         blank=False,
         null=False,
@@ -118,7 +128,7 @@ class Review(models.Model):
         ]
 
 
-class Comments(models.Model):
+class Comment(models.Model):
     review_id = models.ForeignKey('Review',
                                   on_delete=models.CASCADE,
                                   blank=False,
