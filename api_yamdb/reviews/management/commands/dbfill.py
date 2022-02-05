@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404
 
 import csv
 
-from reviews.models import (User, Category, Titles, Review, Genre,
-                            GenreTitle, Comments)
+from reviews.models import (User, Category, Title, Review, Genre,
+                            GenreTitle, Comment)
 
 
 class Command(BaseCommand):
@@ -61,7 +61,7 @@ class Command(BaseCommand):
                 if row_num == 0:
                     continue
                 else:
-                    Titles.objects.get_or_create(
+                    Title.objects.get_or_create(
                         id=row[0],
                         name=row[1],
                         year=row[2],
@@ -79,7 +79,7 @@ class Command(BaseCommand):
                 else:
                     Review.objects.get_or_create(
                         id=row[0],
-                        title_id=get_object_or_404(Titles, id=row[1]),
+                        title_id=get_object_or_404(Title, id=row[1]),
                         text=row[2],
                         author=get_object_or_404(User, id=row[3]),
                         score=row[4],
@@ -112,7 +112,7 @@ class Command(BaseCommand):
                 else:
                     GenreTitle.objects.get_or_create(
                         id=row[0],
-                        title_id=get_object_or_404(Titles, id=row[1]),
+                        title_id=get_object_or_404(Title, id=row[1]),
                         genre_id=get_object_or_404(Genre, id=row[2])
                     )
             csvfile.close()
@@ -125,7 +125,7 @@ class Command(BaseCommand):
                 if row_num == 0:
                     continue
                 else:
-                    Comments.objects.get_or_create(
+                    Comment.objects.get_or_create(
                         id=row[0],
                         review_id=get_object_or_404(Review, id=row[1]),
                         text=row[2],
