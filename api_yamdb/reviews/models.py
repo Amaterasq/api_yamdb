@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
-# from django.db.models.expressions import RawSQL
 
 import datetime
 
@@ -22,12 +21,13 @@ class User(AbstractUser):
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=200,
+    name = models.CharField(max_length=256,
                             unique=True,
                             blank=False,
                             null=False
                             )
-    slug = models.SlugField(unique=True,
+    slug = models.SlugField(max_length=50,
+                            unique=True,
                             blank=False,
                             null=False)
 
@@ -36,11 +36,12 @@ class Genre(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200,
+    name = models.CharField(max_length=256,
                             unique=True,
                             blank=False,
                             null=False)
-    slug = models.SlugField(unique=True,
+    slug = models.SlugField(max_length=50,
+                            unique=True,
                             blank=False,
                             null=False)
 
@@ -48,8 +49,8 @@ class Category(models.Model):
         return self.name
 
 
-class Title(models.Model):
-    name = models.CharField(max_length=200,
+class Titles(models.Model):
+    name = models.CharField(max_length=256,
                             blank=False,
                             null=False)
     year = models.IntegerField(
@@ -69,6 +70,9 @@ class Title(models.Model):
         related_name='titles'
     )
     genre = models.ManyToManyField(Genre, through='GenreTitle')
+    description = models.CharField(max_length=256,
+                                   blank=True,
+                                   null=True)
 
     def __str__(self):
         return self.name
