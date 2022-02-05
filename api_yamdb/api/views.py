@@ -2,18 +2,17 @@ from rest_framework import viewsets, filters, mixins
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 
-from reviews.models import Title, Review, Comment
 from api.serializers import (
     TitleSerializer, ReviewSerializer, CommentsSerializer, CategorySerializer
 )
-from reviews.models import Category, Genre, Titles, Review
+from reviews.models import Category, Genre, Title, Review
 from api.filters import TitlesFilter
 
 
 class TitleViewSet(viewsets.ModelViewSet):
 
     serializer_class = TitleSerializer
-    queryset = Titles.objects.all()
+    queryset = Title.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
 
@@ -38,6 +37,12 @@ class GenresViewSet(mixins.ListModelMixin,
     queryset = Genre.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+
+    def perform_create(self, serializer):
+        serializer.save(
+            author=self.request.user,
+            title=get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        )
 
 
 class CommentsViewSet(viewsets.ModelViewSet):

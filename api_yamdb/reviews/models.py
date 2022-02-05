@@ -49,7 +49,7 @@ class Category(models.Model):
         return self.name
 
 
-class Titles(models.Model):
+class Title(models.Model):
     name = models.CharField(max_length=256,
                             blank=False,
                             null=False)
@@ -67,7 +67,7 @@ class Titles(models.Model):
         on_delete=models.SET_DEFAULT,
         null=True,
         default='Без категории',
-        related_name='titles'
+        related_name='title'
     )
     genre = models.ManyToManyField(Genre, through='GenreTitle')
     description = models.CharField(max_length=256,
