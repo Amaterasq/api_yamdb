@@ -2,7 +2,7 @@ import uuid
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, filters
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.views import APIView
@@ -135,6 +135,10 @@ class CategoryViewSet(mixins.ListModelMixin,
     queryset = Category.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
+
+    @action(methods=['delete'], detail=True, permission_classes=[IsAdmin])
+    def perform_destroy(self, instance):
+        pass
 
 
 class GenresViewSet(mixins.ListModelMixin,
