@@ -13,7 +13,8 @@ from .serializers import (
     SendCodeSerializer,
     CheckCodeSerializer,
     UserSerializer,
-    GenreSerializer
+    GenreSerializer,
+    TitleCreateSerializer
 )
 from api.permissions import IsAdmin, IsAdminOrReadOnly
 from rest_framework import viewsets, filters, mixins
@@ -121,10 +122,15 @@ class UserDetailPach(APIView):
 
 class TitleViewSet(viewsets.ModelViewSet):
 
-    serializer_class = TitleSerializer
     queryset = Title.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_serializer_class(self):
+        if self.action in ('create', 'partial_update,'):
+            return TitleCreateSerializer
+        return TitleSerializer
 
 
 class CategoryViewSet(mixins.ListModelMixin,

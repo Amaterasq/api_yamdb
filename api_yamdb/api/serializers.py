@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from django.db.models import Avg
+from datetime import date
 
 from reviews.models import Review, Title, Genre, Category, Comment
 from reviews.models import User
@@ -64,14 +65,14 @@ class CategorySerializer(serializers.ModelSerializer):
 class GenreSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = ('name', 'slug',)
+        exclude = ('id',)
         model = Genre
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    category = CategorySerializer()
-    genre = GenreSerializer(many=True)
-    rating = serializers.SerializerMethodField()
+    category = CategorySerializer(read_only=True)
+    genre = GenreSerializer(many=True, read_only=True)
+    rating = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         fields = '__all__'
@@ -81,3 +82,28 @@ class TitleSerializer(serializers.ModelSerializer):
         list = Review.objects.filter(title_id=obj.id)
         rating = list.aggregate(Avg('score'))
         return int(rating.get('score__avg'))
+
+
+class TitleCreateSerializer(serializers.ModelField):
+    category = serializers.SlugRelatedField(
+        slug_field=Category.slug,
+        queryset=Category.objects.all(),
+        required=True)
+    genre = serializers.SlugRelatedField(
+        slug_field=Genre.slug,
+        queryset=Genre.objects.all(),
+        many=True,
+        required=True)
+
+    class Meta:
+        fields = ('__all__')
+        model = Title
+
+    def validate(self, data):
+        """
+        Проверяем год выпуска записи на корректность.
+        """
+        year_today = date.today().year
+        if 0 <= data['year'] <= year_today:
+            raise serializers.ValidationError()
+        return data
