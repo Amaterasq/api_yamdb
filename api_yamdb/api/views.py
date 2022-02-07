@@ -2,7 +2,7 @@ import uuid
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, filters
-from rest_framework.decorators import api_view, action
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.views import APIView
@@ -12,9 +12,10 @@ from reviews.models import User
 from .serializers import (
     SendCodeSerializer,
     CheckCodeSerializer,
-    UserSerializer
+    UserSerializer,
+    GenreSerializer
 )
-from .permissions import IsAdmin
+from api.permissions import IsAdmin, IsAdminOrReadOnly
 from rest_framework import viewsets, filters, mixins
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -135,10 +136,8 @@ class CategoryViewSet(mixins.ListModelMixin,
     queryset = Category.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-
-    @action(methods=['delete'], detail=True, permission_classes=[IsAdmin])
-    def perform_destroy(self, instance):
-        pass
+    permission_classes = [IsAdminOrReadOnly]
+    lookup_field = 'slug'
 
 
 class GenresViewSet(mixins.ListModelMixin,
@@ -146,16 +145,12 @@ class GenresViewSet(mixins.ListModelMixin,
                     mixins.DestroyModelMixin,
                     viewsets.GenericViewSet):
 
-    serializer_class = CategorySerializer
+    serializer_class = GenreSerializer
     queryset = Genre.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-
-    def perform_create(self, serializer):
-        serializer.save(
-            author=self.request.user,
-            title=get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        )
+    permission_classes = [IsAdminOrReadOnly]
+    lookup_field = 'slug'
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
