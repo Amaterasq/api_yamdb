@@ -1,6 +1,6 @@
 import uuid
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -128,9 +128,21 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
     def get_serializer_class(self):
-        if self.action in ('create', 'partial_update,'):
+        if self.action in ['create', 'partial_update']:
             return TitleCreateSerializer
         return TitleSerializer
+
+    def partial_update(self, request, pk=None):
+        title_obj = self.get_object()
+        data = request.data
+        title_obj.category = get_object_or_404(
+            Category, slug=data.get('category')
+        )
+        title_obj.name = data.get('name')
+        title_obj.description = data.get('description')
+        title_obj.save()
+        serializer = TitleCreateSerializer(title_obj)
+        return Response(serializer.data)
 
 
 class CategoryViewSet(mixins.ListModelMixin,

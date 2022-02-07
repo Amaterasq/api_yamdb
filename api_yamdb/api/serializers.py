@@ -81,19 +81,21 @@ class TitleSerializer(serializers.ModelSerializer):
     def get_rating(self, obj):
         list = Review.objects.filter(title_id=obj.id)
         rating = list.aggregate(Avg('score'))
-        return int(rating.get('score__avg'))
+        return rating.get('score__avg')
 
 
-class TitleCreateSerializer(serializers.ModelField):
+class TitleCreateSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
-        slug_field=Category.slug,
+        slug_field='slug',
         queryset=Category.objects.all(),
-        required=True)
+        required=True
+    )
     genre = serializers.SlugRelatedField(
-        slug_field=Genre.slug,
+        slug_field='slug',
         queryset=Genre.objects.all(),
         many=True,
-        required=True)
+        required=True
+    )
 
     class Meta:
         fields = ('__all__')
@@ -104,6 +106,6 @@ class TitleCreateSerializer(serializers.ModelField):
         Проверяем год выпуска записи на корректность.
         """
         year_today = date.today().year
-        if 0 <= data['year'] <= year_today:
-            raise serializers.ValidationError()
+        if 0 >= data['year'] >= year_today:
+            raise serializers.ValidationError('Тест')
         return data
