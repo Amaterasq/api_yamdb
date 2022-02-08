@@ -17,7 +17,7 @@ from .serializers import (
     GenreSerializer,
     TitleCreateSerializer
 )
-from api.permissions import IsAdmin, IsAdminOrReadOnly
+from api.permissions import IsAdmin, IsAdminOrReadOnly, IsAuthorOrAdminOrModerator
 from rest_framework import viewsets, filters, mixins
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -185,8 +185,7 @@ class GenresViewSet(mixins.ListModelMixin,
 class CommentsViewSet(viewsets.ModelViewSet):
     """Отбираем только нужные комментарии к отзыву"""
     serializer_class = CommentsSerializer
-    # permission_classes = (IsAuthenticatedOrReadOnly,
-    #                       IsOwnerOrReadOnly)
+    permission_classes = (IsAuthorOrAdminOrModerator,)
 
     def get_queryset(self):
         review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
@@ -195,15 +194,17 @@ class CommentsViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(
             author=self.request.user,
-            review=get_object_or_404(Review, id=self.kwargs.get('review_id'))
+            review_id=get_object_or_404(
+                Review,
+                id=self.kwargs.get('review_id'))
         )
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """Отбираем только нужные отзывы к произведению"""
     serializer_class = ReviewSerializer
-    # permission_classes = (IsAuthenticatedOrReadOnly,
-    #                       IsOwnerOrReadOnly)
+    permission_classes = (IsAuthorOrAdminOrModerator,
+                          )
 
     def get_queryset(self):
         title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
