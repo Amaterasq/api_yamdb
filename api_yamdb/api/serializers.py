@@ -70,21 +70,27 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class TitleSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
-    genre = GenreSerializer(many=True, read_only=True)
-    rating = serializers.SerializerMethodField(read_only=True)
+
+    category = CategorySerializer()
+    genre = GenreSerializer(many=True)
+    rating = serializers.SerializerMethodField()
 
     class Meta:
         fields = '__all__'
         model = Title
+        read_only_fields = ('category', 'genre', 'rating',)
 
     def get_rating(self, obj):
+        """
+        Считаем рэйтинг произведения.
+        """
         list = Review.objects.filter(title_id=obj.id)
         rating = list.aggregate(Avg('score'))
         return rating.get('score__avg')
 
 
 class TitleCreateSerializer(serializers.ModelSerializer):
+
     category = serializers.SlugRelatedField(
         slug_field='slug',
         queryset=Category.objects.all(),
@@ -98,14 +104,16 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     )
 
     class Meta:
-        fields = ('__all__')
+        fields = '__all__'
         model = Title
 
-    def validate(self, data):
+    def validate_year(self, value):
         """
-        Проверяем год выпуска записи на корректность.
+        Проверяем год выпуска композиции.
         """
         year_today = date.today().year
-        if 0 >= data['year'] >= year_today:
-            raise serializers.ValidationError('Тест')
-        return data
+        if year_today < value:
+            raise serializers.ValidationError(
+                f'Год выпуска не может быть больше {year_today} г.'
+            )
+        return value

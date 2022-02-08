@@ -1,6 +1,6 @@
 import uuid
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, get_list_or_404
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -125,23 +125,22 @@ class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
 
     def get_serializer_class(self):
-        if self.action in ['create', 'partial_update']:
+        if self.action == 'create':
             return TitleCreateSerializer
         return TitleSerializer
 
     def partial_update(self, request, pk=None):
-        title_obj = self.get_object()
-        data = request.data
-        title_obj.category = get_object_or_404(
-            Category, slug=data.get('category')
+        title = get_object_or_404(Title, pk=pk)
+        serializer = TitleCreateSerializer(
+            title,
+            data=request.data,
+            partial=True
         )
-        title_obj.name = data.get('name')
-        title_obj.description = data.get('description')
-        title_obj.save()
-        serializer = TitleCreateSerializer(title_obj)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
 
 
@@ -154,7 +153,7 @@ class CategoryViewSet(mixins.ListModelMixin,
     queryset = Category.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
     lookup_field = 'slug'
 
 
@@ -167,7 +166,7 @@ class GenresViewSet(mixins.ListModelMixin,
     queryset = Genre.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
     lookup_field = 'slug'
 
 
