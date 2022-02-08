@@ -57,17 +57,22 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='username',
         default=serializers.CurrentUserDefault())
+    title_id = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='id'
+    )
 
     class Meta:
         model = Review
-        exclude = ('title_id',)
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Review.objects.all(),
-                fields=['title_id', 'author'],
-                message='Отзыв на публикацию уже есть!'
-            )
-        ]
+        fields = ('id', 'title_id', 'text', 'author', 'score')
+        # exclude = ('id',)
+        # validators = [
+        #     UniqueTogetherValidator(
+        #         queryset=Review.objects.all(),
+        #         fields=['title_id', 'author'],
+        #         message='Отзыв на публикацию уже есть!'
+        #     )
+        # ]
 
 
 class CategorySerializer(serializers.ModelSerializer):

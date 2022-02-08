@@ -212,5 +212,5 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(
             author=self.request.user,
-            title=get_object_or_404(Title, id=self.kwargs.get('title_id'))
+            title_id=get_object_or_404(Title, id=self.kwargs.get('title_id'))
         )
