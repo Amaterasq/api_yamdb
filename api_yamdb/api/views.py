@@ -17,7 +17,8 @@ from .serializers import (
     GenreSerializer,
     TitleCreateSerializer
 )
-from api.permissions import IsAdmin, IsAdminOrReadOnly, IsAuthorOrAdminOrModerator
+from api.permissions import IsAdmin, IsAdminOrReadOnly
+from api.permissions import IsAuthorOrAdminOrModerator
 from rest_framework import viewsets, filters, mixins
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -188,7 +189,8 @@ class CommentsViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthorOrAdminOrModerator,)
 
     def get_queryset(self):
-        review = get_object_or_404(Review, id=self.kwargs.get('review_id'))
+        review = get_object_or_404(Review,
+                                   id=self.kwargs.get('review_id'))
         return review.comments.all()
 
     def perform_create(self, serializer):
@@ -207,11 +209,13 @@ class ReviewViewSet(viewsets.ModelViewSet):
                           )
 
     def get_queryset(self):
-        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
+        title = get_object_or_404(Title,
+                                  id=self.kwargs.get('title_id'))
         return title.reviews.all()
 
     def perform_create(self, serializer):
         serializer.save(
             author=self.request.user,
-            title_id=get_object_or_404(Title, id=self.kwargs.get('title_id'))
+            title=get_object_or_404(Title,
+                                    id=self.kwargs.get('title_id'))
         )
