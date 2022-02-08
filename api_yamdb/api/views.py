@@ -13,6 +13,7 @@ from .serializers import (
     SendCodeSerializer,
     CheckCodeSerializer,
     UserSerializer,
+    UserSerializer2,
     GenreSerializer,
     TitleCreateSerializer
 )
@@ -39,8 +40,10 @@ def send_confirmation_code(request):
     username = request.data.get('username', False)
     if serializer.is_valid():
         confirmation_code = uuid.uuid4()
-        user = User.objects.filter(username=username).exists()
+        user = User.objects.filter(username=username, email=email).exists()
         if not user:
+            if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
+                return Response({"result": "Этот email или username уже используются."}, status=status.HTTP_400_BAD_REQUEST)
             User.objects.create_user(username=username, email=email)
         User.objects.filter(username=username).update(
             confirmation_code=make_password(
@@ -88,7 +91,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     permission_classes = [IsAdmin]
     filter_backends = [filters.SearchFilter]
-    search_fields = ['user__username', ]
+    search_fields = ['username', ]
 
 
 class UserDetailPach(APIView):
@@ -106,7 +109,7 @@ class UserDetailPach(APIView):
         )
 
     def patch(self, request):
-        if request.user.is_authenticated:
+        if request.user.is_staff or request.user.role == 'admin':
             user = get_object_or_404(User, id=request.user.id)
             serializer = UserSerializer(user, data=request.data, partial=True)
             if serializer.is_valid():
@@ -115,8 +118,17 @@ class UserDetailPach(APIView):
             return Response(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
+        if request.user.is_anonymous:
+            return Response(
+                'Вы не авторизованы', status=status.HTTP_401_UNAUTHORIZED
+            )
+        user = get_object_or_404(User, id=request.user.id)
+        serializer = UserSerializer2(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(
-            'Вы не авторизованы', status=status.HTTP_401_UNAUTHORIZED
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST
         )
 
 

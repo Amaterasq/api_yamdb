@@ -12,6 +12,12 @@ class SendCodeSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     username = serializers.CharField(required=True)
 
+    def validate_username(self, value):
+        if value == 'me':
+            raise serializers.ValidationError(
+                "Нельзя выбрать такое имя")
+        return value
+
 
 class CheckCodeSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
@@ -24,6 +30,15 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name', 'last_name', 'username', 'bio', 'email', 'role'
         )
         model = User
+
+
+class UserSerializer2(serializers.ModelSerializer):
+    class Meta:
+        fields = (
+            'first_name', 'last_name', 'username', 'bio', 'email', 'role'
+        )
+        model = User
+        read_only_fields = ["role", ]
 
 
 class CommentsSerializer(serializers.ModelSerializer):
