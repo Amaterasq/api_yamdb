@@ -79,10 +79,6 @@ python -m venv venv
 ```
 source venv/Scripts/activate
 ```
-Обновить версию pip
-```
-python -m pip install --upgrade pip
-```
 
 Установить зависимости из файла requirements.txt:
 
@@ -94,6 +90,12 @@ pip install -r requirements.txt
 
 ```
 python manage.py migrate
+```
+
+Наполнить БД тестовыми данными выполнив команду:
+
+```
+python manage.py dbfill
 ```
 
 Запустить проект:
