@@ -57,17 +57,25 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='username',
         default=serializers.CurrentUserDefault())
+    title = serializers.SlugRelatedField(
+        read_only=True,
+        slug_field='id'
+    )
+
+    def validate(self, data):
+        """
+        Проверка на существование отзыва.
+        """
+        title = self.context['view'].kwargs.get('title_id')
+        user = self.context['request'].user
+        if self.context['request'].method == 'POST':
+            if Review.objects.filter(title=title, author=user).exists():
+                raise serializers.ValidationError('Вы уже оставляли отзыв!')
+        return data
 
     class Meta:
         model = Review
-        exclude = ('title_id',)
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Review.objects.all(),
-                fields=['title_id', 'author'],
-                message='Отзыв на публикацию уже есть!'
-            )
-        ]
+        fields = ('id', 'title', 'text', 'author', 'score', 'pub_date')
 
 
 class CategorySerializer(serializers.ModelSerializer):

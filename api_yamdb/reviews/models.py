@@ -120,7 +120,7 @@ class GenreTitle(models.Model):
 
 
 class Review(models.Model):
-    title_id = models.ForeignKey(
+    title = models.ForeignKey(
         'Title',
         on_delete=models.CASCADE,
         blank=False,
@@ -147,7 +147,7 @@ class Review(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=['title_id', 'author'],
+            models.UniqueConstraint(fields=['title', 'author'],
                                     name='unique_review')
         ]
 
