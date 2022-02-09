@@ -218,6 +218,8 @@ python manage.py runserver
 _Влад Перепечко_
 
 _Алексей Богов_
+_(Alexey Mi. Bogov)_
+![Alexey Mi. Bogov](https://ibb.co/xXnq9TG "Alexey Mi. Bogov")
 
 _Светлана  Петрова_
 _(Svetlana Yu. Petrova)_

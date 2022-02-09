@@ -1,7 +1,8 @@
 from django.contrib import admin
 
-from .models import User, Genre, Category
-from .models import Title, GenreTitle, Review, Comment
+from reviews.models import (
+    User, Genre, Category, Title, GenreTitle, Review, Comment
+)
 
 
 class GenreAdmin(admin.ModelAdmin):

@@ -1,11 +1,9 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueTogetherValidator
 
 from django.db.models import Avg
 from datetime import date
 
-from reviews.models import Review, Title, Genre, Category, Comment
-from reviews.models import User
+from reviews.models import Review, Title, Genre, Category, Comment, User
 
 
 class SendCodeSerializer(serializers.Serializer):
@@ -38,7 +36,7 @@ class UserSerializer2(serializers.ModelSerializer):
             'first_name', 'last_name', 'username', 'bio', 'email', 'role'
         )
         model = User
-        read_only_fields = ["role", ]
+        read_only_fields = ("role", )
 
 
 class CommentsSerializer(serializers.ModelSerializer):

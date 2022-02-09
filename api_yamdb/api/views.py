@@ -1,15 +1,16 @@
 import uuid
-from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, status, filters
+from rest_framework import viewsets, status, filters, mixins
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.views import APIView
+
+from django_filters.rest_framework import DjangoFilterBackend
+from django.core.mail import send_mail
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password, check_password
 
-from reviews.models import User
-from .serializers import (
+from api.serializers import (
     SendCodeSerializer,
     CheckCodeSerializer,
     UserSerializer,
@@ -17,16 +18,14 @@ from .serializers import (
     GenreSerializer,
     TitleCreateSerializer
 )
-from api.permissions import IsAdmin, IsAdminOrReadOnly
-from api.permissions import IsAuthorOrAdminOrModerator
-from rest_framework import viewsets, filters, mixins
-from django_filters.rest_framework import DjangoFilterBackend
-
+from api.permissions import (
+    IsAdmin, IsAdminOrReadOnly, IsAuthorOrAdminOrModerator
+)
 from api.serializers import (
     TitleSerializer, ReviewSerializer, CommentsSerializer, CategorySerializer
 )
-from reviews.models import Category, Genre, Title, Review
 from api.filters import TitlesFilter
+from reviews.models import Category, Genre, Title, Review, User
 
 
 @api_view(['POST'])
@@ -43,8 +42,12 @@ def send_confirmation_code(request):
         confirmation_code = uuid.uuid4()
         user = User.objects.filter(username=username, email=email).exists()
         if not user:
-            if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
-                return Response({"result": "Этот email или username уже используются."}, status=status.HTTP_400_BAD_REQUEST)
+            if (User.objects.filter(username=username).exists()
+                    or User.objects.filter(email=email).exists()):
+                return Response(
+                    {"result": "Этот email или username уже используются."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             User.objects.create_user(username=username, email=email)
         User.objects.filter(username=username).update(
             confirmation_code=make_password(
