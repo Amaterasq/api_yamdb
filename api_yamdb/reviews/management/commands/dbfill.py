@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand
+'''from django.core.management.base import BaseCommand
 from django.shortcuts import get_object_or_404
 
 import csv
@@ -134,4 +134,4 @@ class Command(BaseCommand):
                     )
         self.stdout.write(
             'The database has been successfully filled with test data!'
-        )
+        )'''
