@@ -219,7 +219,6 @@ _Влад Перепечко_
 
 _Алексей Богов_
 _(Alexey Mi. Bogov)_
-![Alexey Mi. Bogov](https://imgbb.com/][img]https://i.ibb.co/tQ0pjrc/Screenshot-1.png "Alexey Mi. Bogov")
 
 _Светлана  Петрова_
 _(Svetlana Yu. Petrova)_
