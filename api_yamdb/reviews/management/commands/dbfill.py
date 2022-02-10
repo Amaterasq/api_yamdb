@@ -2,9 +2,12 @@ from django.core.management.base import BaseCommand
 from django.shortcuts import get_object_or_404
 
 import csv
+from colorama import init, Fore
 
 from reviews.models import (User, Category, Title, Review, Genre,
                             GenreTitle, Comment)
+
+init(autoreset=True)
 
 
 class Command(BaseCommand):
@@ -16,7 +19,7 @@ class Command(BaseCommand):
 
     def fill_table_users(self):
         self.stdout.write(
-            '/api_yamdb/static/data/users.csv', ending=' .... '
+            '  /api_yamdb/static/data/users.csv', ending='... '
         )
         try:
             with open('static/data/users.csv', encoding='utf-8') as csvfile:
@@ -34,16 +37,16 @@ class Command(BaseCommand):
                             first_name=row[5],
                             last_name=row[6],
                         )
-            return self.stdout.write(self.style.SUCCESS('OK'))
+            return self.stdout.write(Fore.GREEN + 'OK')
         except Exception as error:
-            self.stdout.write('FALSE')
+            self.stderr.write(Fore.RED + 'FALSE')
             raise Exception(error)
         finally:
             csvfile.close()
 
     def fill_table_category(self):
         self.stdout.write(
-            '/api_yamdb/static/data/category.csv', ending=' .... '
+            '  /api_yamdb/static/data/category.csv', ending='... '
         )
         try:
             with open('static/data/category.csv', encoding='utf-8') as csvfile:
@@ -57,16 +60,16 @@ class Command(BaseCommand):
                             name=row[1],
                             slug=row[2]
                         )
-            return self.stdout.write(self.style.SUCCESS('OK'))
+            return self.stdout.write(Fore.GREEN + 'OK')
         except Exception as error:
-            self.stdout.write('FALSE')
+            self.stderr.write(Fore.RED + 'FALSE')
             raise Exception(error)
         finally:
             csvfile.close()
 
     def fill_table_titles(self):
         self.stdout.write(
-            '/api_yamdb/static/data/titles.csv', ending=' .... '
+            '  /api_yamdb/static/data/titles.csv', ending='... '
         )
         try:
             with open('static/data/titles.csv', encoding='utf-8') as csvfile:
@@ -81,16 +84,16 @@ class Command(BaseCommand):
                             year=row[2],
                             category=get_object_or_404(Category, id=row[3])
                         )
-            return self.stdout.write(self.style.SUCCESS('OK'))
+            return self.stdout.write(Fore.GREEN + 'OK')
         except Exception as error:
-            self.stdout.write('FALSE')
+            self.stderr.write(Fore.RED + 'FALSE')
             raise Exception(error)
         finally:
             csvfile.close()
 
     def fill_table_review(self):
         self.stdout.write(
-            '/api_yamdb/static/data/review.csv', ending=' .... '
+            '  /api_yamdb/static/data/review.csv', ending='... '
         )
         try:
             with open('static/data/review.csv', encoding='utf-8') as csvfile:
@@ -107,16 +110,16 @@ class Command(BaseCommand):
                             score=row[4],
                             pub_date=row[5]
                         )
-            return self.stdout.write(self.style.SUCCESS('OK'))
+            return self.stdout.write(Fore.GREEN + 'OK')
         except Exception as error:
-            self.stdout.write('FALSE')
+            self.stderr.write(Fore.RED + 'FALSE')
             raise Exception(error)
         finally:
             csvfile.close()
 
     def fill_table_genre(self):
         self.stdout.write(
-            '/api_yamdb/static/data/genre.csv', ending=' .... '
+            '  /api_yamdb/static/data/genre.csv', ending='... '
         )
         try:
             with open('static/data/genre.csv', encoding='utf-8') as csvfile:
@@ -130,16 +133,16 @@ class Command(BaseCommand):
                             name=row[1],
                             slug=row[2]
                         )
-            return self.stdout.write(self.style.SUCCESS('OK'))
+            return self.stdout.write(Fore.GREEN + 'OK')
         except Exception as error:
-            self.stdout.write('FALSE')
+            self.stderr.write(Fore.RED + 'FALSE')
             raise Exception(error)
         finally:
             csvfile.close()
 
     def fill_table_genre_title(self):
         self.stdout.write(
-            '/api_yamdb/static/data/genre_title.csv', ending=' .... '
+            '  /api_yamdb/static/data/genre_title.csv', ending='... '
         )
         try:
             with open(
@@ -155,16 +158,16 @@ class Command(BaseCommand):
                             title_id=get_object_or_404(Title, id=row[1]),
                             genre_id=get_object_or_404(Genre, id=row[2])
                         )
-            return self.stdout.write(self.style.SUCCESS('OK'))
+            return self.stdout.write(Fore.GREEN + 'OK')
         except Exception as error:
-            self.stdout.write('FALSE')
+            self.stderr.write(Fore.RED + 'FALSE')
             raise Exception(error)
         finally:
             csvfile.close()
 
     def fill_table_comments(self):
         self.stdout.write(
-            '/api_yamdb/static/data/comments.csv', ending=' .... '
+            '  /api_yamdb/static/data/comments.csv', ending='... '
         )
         try:
             with open('static/data/comments.csv', encoding='utf-8') as csvfile:
@@ -180,16 +183,19 @@ class Command(BaseCommand):
                             author=get_object_or_404(User, id=row[3]),
                             pub_date=row[4]
                         )
-            return self.stdout.write(self.style.SUCCESS('OK'))
+            return self.stdout.write(Fore.GREEN + 'OK')
         except Exception as error:
-            self.stdout.write('FALSE')
+            self.stderr.write(Fore.RED + 'FALSE')
             raise Exception(error)
         finally:
             csvfile.close()
 
     def handle(self, *args, **options):
         self.stdout.write(
-            '\nStarting to fill the database with test data:\n\n'
+            'Operations to perform:\n'
+            + '  Filling the database with test data '
+            + 'from /api_yamdb/static/data/\n'
+            + 'Running filling database:'
         )
         try:
             self.fill_table_users()
@@ -199,10 +205,7 @@ class Command(BaseCommand):
             self.fill_table_genre()
             self.fill_table_genre_title()
             self.fill_table_comments()
-            self.stdout.write(
-                '\nThe database has been successfully filled with test data!'
-            )
         except Exception as error:
             self.stderr.write(
-                f'Execution error - {error}!'
+                Fore.RED + f'Execution error - {error}!'
             )
