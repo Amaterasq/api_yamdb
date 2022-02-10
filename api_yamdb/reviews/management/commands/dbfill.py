@@ -78,6 +78,8 @@ class Command(BaseCommand):
                     if row_num == 0:
                         continue
                     else:
+                        if Title.objects.filter(id=row[0]).exists():
+                            continue
                         Title.objects.get_or_create(
                             id=row[0],
                             name=row[1],
