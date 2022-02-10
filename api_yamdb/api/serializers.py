@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from datetime import datetime
+
 from reviews.models import Review, Title, Genre, Category, Comment, User
 
 
@@ -113,6 +115,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
         many=True,
         required=True
     )
+    year = serializers.IntegerField(max_value=datetime.now().year)
 
     class Meta:
         fields = '__all__'
