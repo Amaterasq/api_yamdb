@@ -19,7 +19,7 @@ class Command(BaseCommand):
 
     def fill_table_users(self):
         self.stdout.write(
-            '  /api_yamdb/static/data/users.csv', ending='... '
+            '  Applying /api_yamdb/static/data/users.csv', ending='... '
         )
         try:
             with open('static/data/users.csv', encoding='utf-8') as csvfile:
@@ -46,7 +46,7 @@ class Command(BaseCommand):
 
     def fill_table_category(self):
         self.stdout.write(
-            '  /api_yamdb/static/data/category.csv', ending='... '
+            '  Applying /api_yamdb/static/data/category.csv', ending='... '
         )
         try:
             with open('static/data/category.csv', encoding='utf-8') as csvfile:
@@ -69,7 +69,7 @@ class Command(BaseCommand):
 
     def fill_table_titles(self):
         self.stdout.write(
-            '  /api_yamdb/static/data/titles.csv', ending='... '
+            '  Applying /api_yamdb/static/data/titles.csv', ending='... '
         )
         try:
             with open('static/data/titles.csv', encoding='utf-8') as csvfile:
@@ -93,7 +93,7 @@ class Command(BaseCommand):
 
     def fill_table_review(self):
         self.stdout.write(
-            '  /api_yamdb/static/data/review.csv', ending='... '
+            '  Applying /api_yamdb/static/data/review.csv', ending='... '
         )
         try:
             with open('static/data/review.csv', encoding='utf-8') as csvfile:
@@ -121,7 +121,7 @@ class Command(BaseCommand):
 
     def fill_table_genre(self):
         self.stdout.write(
-            '  /api_yamdb/static/data/genre.csv', ending='... '
+            '  Applying /api_yamdb/static/data/genre.csv', ending='... '
         )
         try:
             with open('static/data/genre.csv', encoding='utf-8') as csvfile:
@@ -144,7 +144,7 @@ class Command(BaseCommand):
 
     def fill_table_genre_title(self):
         self.stdout.write(
-            '  /api_yamdb/static/data/genre_title.csv', ending='... '
+            '  Applying /api_yamdb/static/data/genre_title.csv', ending='... '
         )
         try:
             with open(
@@ -169,7 +169,7 @@ class Command(BaseCommand):
 
     def fill_table_comments(self):
         self.stdout.write(
-            '  /api_yamdb/static/data/comments.csv', ending='... '
+            '  Applying /api_yamdb/static/data/comments.csv', ending='... '
         )
         try:
             with open('static/data/comments.csv', encoding='utf-8') as csvfile:
