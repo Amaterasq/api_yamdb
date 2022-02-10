@@ -77,7 +77,7 @@ https://github.com/Amaterasq
 ### Алексей Богов_
 _(Alexey Mi. Bogov)_
 ```html
-e-mail:
+e-mail: bogov-alexey@yandex.ru
 ```
 ```html
 https://github.com/BogovAlex
