@@ -9,6 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import make_password, check_password
+from django.db.models import Avg
 
 from api.serializers import (
     SendCodeSerializer,
@@ -138,7 +139,7 @@ class UserDetailPach(APIView):
 
 class TitleViewSet(viewsets.ModelViewSet):
 
-    queryset = Title.objects.all()
+    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
     filter_backends = (DjangoFilterBackend,)
     filterset_class = TitlesFilter
     permission_classes = (IsAdminOrReadOnly,)
