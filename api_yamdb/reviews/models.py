@@ -78,7 +78,6 @@ class Title(models.Model):
                             blank=False,
                             null=False)
     year = models.IntegerField(
-        'Год издания',
         validators=[MinValueValidator(0),
                     MaxValueValidator(current_year())],
         blank=False,
