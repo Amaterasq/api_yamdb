@@ -58,6 +58,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field='id'
     )
+    score = serializers.IntegerField(max_value=10, min_value=0)
 
     def validate(self, data):
         """
@@ -72,7 +73,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ('id', 'title', 'text', 'author', 'score', 'pub_date')
+        fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
