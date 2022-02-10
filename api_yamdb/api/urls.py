@@ -12,21 +12,21 @@ from .views import (
     UserDetailPach
 )
 
-router = DefaultRouter()
-router.register(r'users', UsersViewSet)
-router.register(r'titles', TitleViewSet, basename='titles')
-router.register(
+router_v1 = DefaultRouter()
+router_v1.register(r'users', UsersViewSet, basename='users')
+router_v1.register(r'titles', TitleViewSet, basename='titles')
+router_v1.register(
     r'titles/(?P<title_id>\d+)/reviews/(?P<review_id>\d+)/comments',
     CommentsViewSet, basename='comments'
 )
-router.register(r'titles/(?P<title_id>\d+)/reviews',
-                ReviewViewSet, basename='reviews')
-router.register(r'categories', CategoryViewSet, basename='categories')
-router.register(r'genres', GenresViewSet, basename='genres')
+router_v1.register(r'titles/(?P<title_id>\d+)/reviews',
+                   ReviewViewSet, basename='reviews')
+router_v1.register(r'categories', CategoryViewSet, basename='categories')
+router_v1.register(r'genres', GenresViewSet, basename='genres')
 
 urlpatterns = [
     path('v1/auth/signup/', send_confirmation_code),
     path('v1/auth/token/', get_jwt_token),
     path('v1/users/me/', UserDetailPach.as_view()),
-    path('v1/', include(router.urls)),
+    path('v1/', include(router_v1.urls)),
 ]
