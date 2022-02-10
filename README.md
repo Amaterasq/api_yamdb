@@ -6,8 +6,8 @@ api_yamdb
 Возможности приложения:
 - [X] Регистрация на сайте, получение токена, изменение данных своей учетной записи.
 - [X] Раздаление прав пользователей согласно, назначенной ему роли. 
-- [Х] Возможность, согласно авторизации выполнять следующие дествия: получать, добавлять и удалять - категорию, жанр, произведение, отзыв и комментарий.
-- [Х] Администрирование пользователями.
+- [X] Возможность, согласно авторизации выполнять следующие дествия: получать, добавлять и удалять - категорию, жанр, произведение, отзыв и комментарий.
+- [X] Администрирование пользователями.
 
 
 # Технологии в проекте
@@ -66,18 +66,29 @@ python manage.py runserver
 ```
 
 # Авторы проекта 
-_Влад Перепечко_
+### Влад Перепечко
+```html
 e-mail:
+```
+```html
 https://github.com/Amaterasq
+```
 
-_Алексей Богов_
+### Алексей Богов_
 _(Alexey Mi. Bogov)_
+```html
 e-mail:
+```
+```html
 https://github.com/BogovAlex
+```
 
-_Светлана  Петрова_
+### Светлана  Петрова_
 _(Svetlana Yu. Petrova)_
-![Svetlana Yu. Petrova](https://scontent-iev1-1.xx.fbcdn.net/v/t1.6435-9/p206x206/101204812_2968762206526462_4647695449438814208_n.jpg?_nc_cat=102&ccb=1-5&_nc_sid=da31f3&_nc_ohc=HlW3XVYBr3MAX8bhEGi&_nc_ht=scontent-iev1-1.xx&oh=00_AT-SmL9NzrKGJR1Omw4dt7rbXW-NNr_pcrXXOTM0V5fMuQ&oe=62086683 "Svetlana Yu. Petrova")
-
+```html
 e-mail: master-cim@yandex.ru
+```
+```html
 https://github.com/master-cim
+```
+![Svetlana Yu. Petrova](https://scontent-iev1-1.xx.fbcdn.net/v/t1.6435-9/p206x206/101204812_2968762206526462_4647695449438814208_n.jpg?_nc_cat=102&ccb=1-5&_nc_sid=da31f3&_nc_ohc=HlW3XVYBr3MAX8bhEGi&_nc_ht=scontent-iev1-1.xx&oh=00_AT-SmL9NzrKGJR1Omw4dt7rbXW-NNr_pcrXXOTM0V5fMuQ&oe=62086683 "Svetlana Yu. Petrova")
