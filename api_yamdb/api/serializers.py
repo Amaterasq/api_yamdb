@@ -94,6 +94,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
     category = CategorySerializer()
     genre = GenreSerializer(many=True)
+    rating = serializers.IntegerField()
 
     class Meta:
         fields = '__all__'
