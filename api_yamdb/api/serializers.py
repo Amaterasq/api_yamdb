@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-from datetime import date
-
 from reviews.models import Review, Title, Genre, Category, Comment, User
 
 
@@ -119,14 +117,3 @@ class TitleCreateSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Title
-
-    def validate_year(self, value):
-        """
-        Проверяем год выпуска композиции.
-        """
-        year_today = date.today().year
-        if year_today < value:
-            raise serializers.ValidationError(
-                f'Год выпуска не может быть больше {year_today} г.'
-            )
-        return value
