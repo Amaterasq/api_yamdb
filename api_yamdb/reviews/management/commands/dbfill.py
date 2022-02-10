@@ -102,6 +102,8 @@ class Command(BaseCommand):
                     if row_num == 0:
                         continue
                     else:
+                        if Review.objects.filter(id=row[0]).exists():
+                            continue
                         Review.objects.get_or_create(
                             id=row[0],
                             title_id=row[1],
@@ -176,6 +178,8 @@ class Command(BaseCommand):
                     if row_num == 0:
                         continue
                     else:
+                        if Comment.objects.filter(id=row[0]).exists():
+                            continue
                         Comment.objects.get_or_create(
                             id=row[0],
                             review_id=get_object_or_404(Review, id=row[1]),
