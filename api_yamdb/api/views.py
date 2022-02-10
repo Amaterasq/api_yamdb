@@ -145,20 +145,9 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrReadOnly,)
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action in ('create', 'partial_update',):
             return TitleCreateSerializer
         return TitleSerializer
-
-    def partial_update(self, request, pk=None):
-        title = get_object_or_404(Title, pk=pk)
-        serializer = TitleCreateSerializer(
-            title,
-            data=request.data,
-            partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
 
 
 class CategoryViewSet(mixins.ListModelMixin,
@@ -174,17 +163,10 @@ class CategoryViewSet(mixins.ListModelMixin,
     lookup_field = 'slug'
 
 
-class GenresViewSet(mixins.ListModelMixin,
-                    mixins.CreateModelMixin,
-                    mixins.DestroyModelMixin,
-                    viewsets.GenericViewSet):
+class GenresViewSet(CategoryViewSet):
 
     serializer_class = GenreSerializer
     queryset = Genre.objects.all()
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('name',)
-    permission_classes = (IsAdminOrReadOnly,)
-    lookup_field = 'slug'
 
 
 class CommentsViewSet(viewsets.ModelViewSet):
