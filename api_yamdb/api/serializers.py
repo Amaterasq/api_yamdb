@@ -115,7 +115,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
         many=True,
         required=True
     )
-    year = serializers.IntegerField(max_value=datetime.now().year)
+    year = serializers.IntegerField(max_value=datetime.now().year, min_value=0)
 
     class Meta:
         fields = '__all__'
