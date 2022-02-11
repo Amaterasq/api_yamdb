@@ -67,8 +67,9 @@ python manage.py runserver
 
 # Авторы проекта 
 ### Влад Перепечко
+_(Vlad Vi. Perepechko)_
 ```html
-e-mail:
+e-mail: perepechcko.vlad@ya.ru
 ```
 ```html
 https://github.com/Amaterasq

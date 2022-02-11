@@ -8,14 +8,12 @@ from rest_framework.views import APIView
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.hashers import make_password, check_password
 from django.db.models import Avg
 
 from api.serializers import (
     SendCodeSerializer,
     CheckCodeSerializer,
     UserSerializer,
-    UserSerializer2,
     GenreSerializer,
     TitleCreateSerializer
 )
@@ -27,6 +25,7 @@ from api.serializers import (
 )
 from api.filters import TitlesFilter
 from reviews.models import Category, Genre, Title, Review, User
+from api_yamdb.settings import YAMBD_EMAIL
 
 
 @api_view(['POST'])
@@ -37,33 +36,30 @@ def send_confirmation_code(request):
     Код доступен в корне в папке sent_emails
     '''
     serializer = SendCodeSerializer(data=request.data)
-    email = request.data.get('email', False)
-    username = request.data.get('username', False)
-    if serializer.is_valid():
-        confirmation_code = uuid.uuid4()
-        user = User.objects.filter(username=username, email=email).exists()
-        if not user:
-            if (User.objects.filter(username=username).exists()
-                    or User.objects.filter(email=email).exists()):
-                return Response(
-                    {"result": "Этот email или username уже используются."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            User.objects.create_user(username=username, email=email)
-        User.objects.filter(username=username).update(
-            confirmation_code=make_password(
-                confirmation_code, salt=None, hasher='default'
+    serializer.is_valid(raise_exception=True)
+    username = serializer.data.get('username')
+    email = serializer.data.get('email')
+    confirmation_code = uuid.uuid4()
+    user = User.objects.filter(username=username, email=email).exists()
+    if not user:
+        if (
+            User.objects.filter(username=username).exists()
+            or User.objects.filter(email=email).exists()
+        ):
+            return Response(
+                {"result": "Этот email или username уже используются."},
+                status=status.HTTP_400_BAD_REQUEST
             )
-        )
-        send_mail(
-            'Подтверждение аккаунта на Yamdb',
-            f'Код подтверждения: {confirmation_code}',
-            'Yamdb',
-            [email],
-            fail_silently=True,
-        )
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        User.objects.create_user(username=username, email=email)
+    User.objects.get(username=username).confirmation_code = confirmation_code
+    send_mail(
+        'Подтверждение аккаунта на Yamdb',
+        f'Код подтверждения: {confirmation_code}',
+        YAMBD_EMAIL,
+        [email],
+        fail_silently=True,
+    )
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -73,16 +69,20 @@ def get_jwt_token(request):
     Возвращает токен для авторизации.
     '''
     serializer = CheckCodeSerializer(data=request.data)
-    if serializer.is_valid():
-        username = serializer.data.get('username')
-        confirmation_code = serializer.data.get('confirmation_code')
-        user = get_object_or_404(User, username=username)
-        if check_password(confirmation_code, user.confirmation_code):
-            token = AccessToken.for_user(user)
-            return Response({'token': f'{token}'}, status=status.HTTP_200_OK)
-        return Response({'confirmation_code': 'Неверный код подтверждения'},
-                        status=status.HTTP_400_BAD_REQUEST)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    serializer.is_valid(raise_exception=True)
+    username = serializer.data.get('username')
+    confirmation_code = serializer.data.get('confirmation_code')
+    user = get_object_or_404(User, username=username)
+    if confirmation_code == user.confirmation_code:
+        token = AccessToken.for_user(user)
+        return Response(
+            {'token': f'{token}'},
+            status=status.HTTP_200_OK
+        )
+    return Response(
+        {'confirmation_code': 'Неверный код подтверждения'},
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -105,36 +105,27 @@ class UserDetailPach(APIView):
     Получение и изменение детальной информации о себе.
     '''
     def get(self, request):
-        if request.user.is_authenticated:
-            user = get_object_or_404(User, id=request.user.id)
-            serializer = UserSerializer(user)
-            return Response(serializer.data)
-        return Response(
-            'Вы не авторизованы', status=status.HTTP_401_UNAUTHORIZED
-        )
-
-    def patch(self, request):
-        if request.user.is_staff or request.user.role == 'admin':
-            user = get_object_or_404(User, id=request.user.id)
-            serializer = UserSerializer(user, data=request.data, partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
         if request.user.is_anonymous:
             return Response(
                 'Вы не авторизованы', status=status.HTTP_401_UNAUTHORIZED
             )
         user = get_object_or_404(User, id=request.user.id)
-        serializer = UserSerializer2(user, data=request.data, partial=True)
-        if serializer.is_valid():
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    def patch(self, request):
+        if request.user.is_anonymous:
+            return Response(
+                'Вы не авторизованы', status=status.HTTP_401_UNAUTHORIZED
+            )
+        user = get_object_or_404(User, id=request.user.id)
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        if request.user.is_staff or request.user.role == User.ADMIN:
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(
-            serializer.errors, status=status.HTTP_400_BAD_REQUEST
-        )
+        else:
+            serializer.save(role=request.user.role)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TitleViewSet(viewsets.ModelViewSet):

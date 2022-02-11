@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 import datetime
@@ -9,39 +9,36 @@ def current_year():
     return datetime.date.today().year
 
 
-class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password=None, **kwargs):
-        user = self.model(email=email, **kwargs)
-        user.set_password(password)
-        user.save()
-        return user
-
-    def create_superuser(self, email, password, **kwargs):
-        user = self.model(
-            email=email, is_staff=True, is_superuser=True, **kwargs
-        )
-        user.set_password(password)
-        user.save()
-        return user
-
-
 class User(AbstractUser):
-    username = models.TextField(max_length=100, unique=True)
-    email = models.EmailField(unique=True)
+    username = models.TextField(max_length=150, unique=True)
+    email = models.EmailField(max_length=254, unique=True)
+    first_name = models.TextField(max_length=150, blank=True)
+    last_name = models.TextField(max_length=150, blank=True)
     bio = models.TextField(max_length=1000, blank=True)
     confirmation_code = models.CharField(max_length=50, default='1')
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email']
-
+    ADMIN = 'admin'
+    MODERATOR = 'moderator'
+    USER = 'user'
+    roles = (ADMIN, MODERATOR, USER)
     USER_ROLE = (
-        ('user', 'user'),
-        ('moderator', 'moderator'),
-        ('admin', 'admin'),
+        (USER, 'user'),
+        (MODERATOR, 'moderator'),
+        (ADMIN, 'admin'),
+    )
+    role = models.CharField(
+        max_length=max(len(i) for i in roles),
+        choices=USER_ROLE,
+        default='user'
     )
 
-    role = models.CharField(max_length=9, choices=USER_ROLE, default='user')
-    objects = CustomUserManager()
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN or self.is_staff
+
+    @property
+    def is_moderator(self):
+        return self.role == self.MODERATOR
 
 
 class Genre(models.Model):

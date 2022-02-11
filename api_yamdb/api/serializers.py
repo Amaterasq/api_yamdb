@@ -7,7 +7,7 @@ from reviews.models import Review, Title, Genre, Category, Comment, User
 
 class SendCodeSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
-    username = serializers.CharField(required=True)
+    username = serializers.SlugField(required=True)
 
     def validate_username(self, value):
         if value == 'me':
@@ -17,7 +17,7 @@ class SendCodeSerializer(serializers.Serializer):
 
 
 class CheckCodeSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
+    username = serializers.SlugField(required=True)
     confirmation_code = serializers.CharField(required=True)
 
 
@@ -27,15 +27,6 @@ class UserSerializer(serializers.ModelSerializer):
             'first_name', 'last_name', 'username', 'bio', 'email', 'role'
         )
         model = User
-
-
-class UserSerializer2(serializers.ModelSerializer):
-    class Meta:
-        fields = (
-            'first_name', 'last_name', 'username', 'bio', 'email', 'role'
-        )
-        model = User
-        read_only_fields = ("role", )
 
 
 class CommentsSerializer(serializers.ModelSerializer):
