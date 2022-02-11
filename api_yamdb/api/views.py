@@ -51,7 +51,8 @@ def send_confirmation_code(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         User.objects.create_user(username=username, email=email)
-    User.objects.filter(username=username).update(confirmation_code=confirmation_code)
+    User.objects.filter(username=username).update(
+        confirmation_code=confirmation_code)
     send_mail(
         'Подтверждение аккаунта на Yamdb',
         f'Код подтверждения: {confirmation_code}',
@@ -141,20 +142,24 @@ class TitleViewSet(viewsets.ModelViewSet):
         return TitleSerializer
 
 
-class CategoryViewSet(mixins.ListModelMixin,
-                      mixins.CreateModelMixin,
-                      mixins.DestroyModelMixin,
-                      viewsets.GenericViewSet):
+class PropertyTitleBaseClass(mixins.ListModelMixin,
+                             mixins.CreateModelMixin,
+                             mixins.DestroyModelMixin,
+                             viewsets.GenericViewSet):
 
-    serializer_class = CategorySerializer
-    queryset = Category.objects.all()
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     permission_classes = (IsAdminOrReadOnly,)
     lookup_field = 'slug'
 
 
-class GenresViewSet(CategoryViewSet):
+class CategoryViewSet(PropertyTitleBaseClass):
+
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+
+
+class GenresViewSet(PropertyTitleBaseClass):
 
     serializer_class = GenreSerializer
     queryset = Genre.objects.all()
