@@ -51,7 +51,7 @@ def send_confirmation_code(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         User.objects.create_user(username=username, email=email)
-    User.objects.get(username=username).confirmation_code = confirmation_code
+    User.objects.filter(username=username).update(confirmation_code=confirmation_code)
     send_mail(
         'Подтверждение аккаунта на Yamdb',
         f'Код подтверждения: {confirmation_code}',
