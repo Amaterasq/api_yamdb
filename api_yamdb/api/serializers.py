@@ -81,6 +81,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
     category = CategorySerializer()
     genre = GenreSerializer(many=True)
+    rating = serializers.ReadOnlyField()
 
     class Meta:
         fields = '__all__'
@@ -102,7 +103,9 @@ class TitleCreateSerializer(serializers.ModelSerializer):
         required=True
     )
     year = serializers.IntegerField(max_value=datetime.now().year, min_value=0)
+    rating = serializers.ReadOnlyField()
 
     class Meta:
-        fields = ('name', 'year', 'description', 'genre', 'category',)
+        fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
+                  'category',)
         model = Title
