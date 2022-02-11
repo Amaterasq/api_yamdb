@@ -1,36 +1,32 @@
-# Название проекта 
-## «YaMDb API»
-api_yamdb
-# Описание
-## Проект YaMDb собирает отзывы пользователей на различные произведения.
-Возможности приложения:
-- [X] Регистрация на сайте, получение токена, изменение данных своей учетной записи.
-- [X] Раздаление прав пользователей согласно, назначенной ему роли. 
-- [X] Возможность, согласно авторизации выполнять следующие дествия: получать, добавлять и удалять - категорию, жанр, произведение, отзыв и комментарий.
-- [X] Администрирование пользователями.
+![](https://img.shields.io/badge/Python-3.7.5-blue) 
+![](https://img.shields.io/badge/Django-2.2.16-green)
+![](https://img.shields.io/badge/DjangoRestFramework-3.12.4-red)
+<br><br>
+## Название проекта
+**«YaMDb API»** - проект YaMDb собирает отзывы пользователей на различные произведения.
+
+**Возможности приложения:**<br>
+:black_small_square: Регистрация на сайте, получение токена, изменение данных своей учетной записи<br>
+:black_small_square: Раздаление прав пользователей согласно, назначенной ему роли<br>
+:black_small_square: Возможность, согласно авторизации выполнять следующие дествия: получать, добавлять и удалять - категорию, жанр, произведение, отзыв и комментарий<br>
+:black_small_square: Администрирование пользователями<br><br>
 
 
-# Технологии в проекте
-- [ ] Django REST Framework
-- [ ] Python
-# Инструкции по запуску
-Клонировать репозиторий и перейти в него в командной строке:
+## :computer: Технологии в проекте
 
-```
+:small_blue_diamond: Python <br>
+:small_blue_diamond: Django <br>
+:small_blue_diamond: Django REST Framework <br><br>
+
+
+## :pencil2: Инструкции по запуску
+
+Клонировать репозиторий, создать и активировать виртуальное окружение:
+
+```sh
 git clone https://github.com/Amaterasq/api_yamdb.git
-```
-
-```
 cd api_yatube
-```
-
-Cоздать и активировать виртуальное окружение:
-
-```
 python -m venv venv
-```
-
-```
 source venv/Scripts/activate
 ```
 
@@ -57,17 +53,22 @@ python manage.py dbfill
 ```
 python manage.py runserver
 ```
-# Примеры
-:white_check_mark: Для того чтобы получить, описанные понятным языком эндпоинты и настройки, да ещё с примерами запросов, да ещё с образцами ответов!
+
+<br>
+
+## :books: Документация
+Для того чтобы получить, описанные понятным языком эндпоинты и настройки, да ещё с примерами запросов, да ещё с образцами ответов!
 Читай ReDoc, документация в этом формате доступна по ссылке:
 
 ```html
  http://127.0.0.1:8000/redoc/
 ```
 
-# Авторы проекта 
-### Влад Перепечко
-_(Vlad Vi. Perepechko)_
+<br>
+
+## :bust_in_silhouette: Авторы проекта 
+
+### :small_orange_diamond: Влад Перепечко _(Vlad Vi. Perepechko)_
 ```html
 e-mail: perepechcko.vlad@ya.ru
 ```
@@ -75,8 +76,7 @@ e-mail: perepechcko.vlad@ya.ru
 https://github.com/Amaterasq
 ```
 
-### Алексей Богов_
-_(Alexey Mi. Bogov)_
+### :small_orange_diamond: Алексей Богов _(Alexey Mi. Bogov)_
 ```html
 e-mail: bogov-alexey@yandex.ru
 ```
@@ -84,8 +84,7 @@ e-mail: bogov-alexey@yandex.ru
 https://github.com/BogovAlex
 ```
 
-### Светлана  Петрова_
-_(Svetlana Yu. Petrova)_
+### :small_orange_diamond: Светлана  Петрова _(Svetlana Yu. Petrova)_
 ```html
 e-mail: master-cim@yandex.ru
 ```
