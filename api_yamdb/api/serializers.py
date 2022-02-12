@@ -89,7 +89,7 @@ class TitleSerializer(serializers.ModelSerializer):
 
     category = CategorySerializer()
     genre = GenreSerializer(many=True)
-    rating = serializers.IntegerField()
+    rating = serializers.IntegerField(default=None)
 
     class Meta:
         fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
