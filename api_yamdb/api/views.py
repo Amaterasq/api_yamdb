@@ -15,13 +15,14 @@ from api.serializers import (
     CheckCodeSerializer,
     UserSerializer,
     GenreSerializer,
-    TitleCreateSerializer
+    TitleSerializer,
+    TitleCreateSerializer,
+    ReviewSerializer,
+    CommentsSerializer,
+    CategorySerializer
 )
 from api.permissions import (
     IsAdmin, IsAdminOrReadOnly, IsAuthorOrAdminOrModeratorOrReadOnly
-)
-from api.serializers import (
-    TitleSerializer, ReviewSerializer, CommentsSerializer, CategorySerializer
 )
 from api.filters import TitlesFilter
 from reviews.models import Category, Genre, Title, Review, User

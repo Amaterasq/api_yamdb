@@ -92,7 +92,8 @@ class TitleSerializer(serializers.ModelSerializer):
     rating = serializers.IntegerField()
 
     class Meta:
-        fields = '__all__'
+        fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
+                  'category',)
         model = Title
         read_only_fields = ('__all__',)
 
