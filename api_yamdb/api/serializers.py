@@ -8,7 +8,7 @@ from reviews.models import Review, Title, Genre, Category, Comment, User
 class SendCodeSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     username = serializers.RegexField(
-        regex=r'^[\w-]+$',
+        regex=r'^[\w.@+-]+$',
         max_length=150,
         required=True
     )
@@ -22,7 +22,7 @@ class SendCodeSerializer(serializers.Serializer):
 
 class CheckCodeSerializer(serializers.Serializer):
     username = serializers.RegexField(
-        regex=r'^[\w-]+$',
+        regex=r'^[\w.@+-]+$',
         max_length=150,
         required=True
     )

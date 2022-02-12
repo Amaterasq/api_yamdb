@@ -18,7 +18,7 @@ from api.serializers import (
     TitleCreateSerializer
 )
 from api.permissions import (
-    IsAdmin, IsAdminOrReadOnly, IsAuthorOrAdminOrModerator
+    IsAdmin, IsAdminOrReadOnly, IsAuthorOrAdminOrModeratorOrReadOnly
 )
 from api.serializers import (
     TitleSerializer, ReviewSerializer, CommentsSerializer, CategorySerializer
@@ -166,7 +166,7 @@ class GenresViewSet(PropertyTitleBaseClass):
 class CommentsViewSet(viewsets.ModelViewSet):
     """Отбираем только нужные комментарии к отзыву"""
     serializer_class = CommentsSerializer
-    permission_classes = (IsAuthorOrAdminOrModerator,)
+    permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
 
     def get_comment(self):
         return get_object_or_404(Review,
@@ -183,7 +183,7 @@ class CommentsViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     """Отбираем только нужные отзывы к произведению"""
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthorOrAdminOrModerator,
+    permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,
                           )
 
     def get_review(self):
