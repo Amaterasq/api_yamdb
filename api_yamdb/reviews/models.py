@@ -20,16 +20,16 @@ class User(AbstractUser):
     ADMIN = 'admin'
     MODERATOR = 'moderator'
     USER = 'user'
-    roles = (ADMIN, MODERATOR, USER)
-    USER_ROLE = (
+
+    USER_ROLES = (
         (USER, 'user'),
         (MODERATOR, 'moderator'),
         (ADMIN, 'admin'),
     )
     role = models.CharField(
-        max_length=max(len(i) for i in roles),
-        choices=USER_ROLE,
-        default='user'
+        max_length=max(len(i[0]) for i in USER_ROLES),
+        choices=USER_ROLES,
+        default=USER
     )
 
     @property

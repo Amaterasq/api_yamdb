@@ -7,7 +7,11 @@ from reviews.models import Review, Title, Genre, Category, Comment, User
 
 class SendCodeSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
-    username = serializers.SlugField(required=True)
+    username = serializers.RegexField(
+        regex=r'^[\w-]+$',
+        max_length=150,
+        required=True
+    )
 
     def validate_username(self, value):
         if value == 'me':
@@ -17,7 +21,11 @@ class SendCodeSerializer(serializers.Serializer):
 
 
 class CheckCodeSerializer(serializers.Serializer):
-    username = serializers.SlugField(required=True)
+    username = serializers.RegexField(
+        regex=r'^[\w-]+$',
+        max_length=150,
+        required=True
+    )
     confirmation_code = serializers.CharField(required=True)
 
 

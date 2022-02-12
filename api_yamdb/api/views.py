@@ -37,11 +37,9 @@ def send_confirmation_code(request):
     '''
     serializer = SendCodeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    username = serializer.data.get('username')
-    email = serializer.data.get('email')
-    confirmation_code = uuid.uuid4()
-    user = User.objects.filter(username=username, email=email).exists()
-    if not user:
+    username = serializer.validated_data.get('username')
+    email = serializer.validated_data.get('email')
+    if not User.objects.filter(username=username, email=email).exists():
         if (
             User.objects.filter(username=username).exists()
             or User.objects.filter(email=email).exists()
@@ -51,11 +49,12 @@ def send_confirmation_code(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         User.objects.create_user(username=username, email=email)
-    User.objects.filter(username=username).update(
-        confirmation_code=confirmation_code)
+    user = User.objects.get(username=username)
+    user.confirmation_code = uuid.uuid4()
+    user.save()
     send_mail(
         'Подтверждение аккаунта на Yamdb',
-        f'Код подтверждения: {confirmation_code}',
+        f'Код подтверждения: {user.confirmation_code}',
         YAMBD_EMAIL,
         [email],
         fail_silently=True,
@@ -71,8 +70,8 @@ def get_jwt_token(request):
     '''
     serializer = CheckCodeSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    username = serializer.data.get('username')
-    confirmation_code = serializer.data.get('confirmation_code')
+    username = serializer.validated_data.get('username')
+    confirmation_code = serializer.validated_data.get('confirmation_code')
     user = get_object_or_404(User, username=username)
     if confirmation_code == user.confirmation_code:
         token = AccessToken.for_user(user)
@@ -110,8 +109,7 @@ class UserDetailPach(APIView):
             return Response(
                 'Вы не авторизованы', status=status.HTTP_401_UNAUTHORIZED
             )
-        user = get_object_or_404(User, id=request.user.id)
-        serializer = UserSerializer(user)
+        serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
     def patch(self, request):
@@ -119,13 +117,13 @@ class UserDetailPach(APIView):
             return Response(
                 'Вы не авторизованы', status=status.HTTP_401_UNAUTHORIZED
             )
-        user = get_object_or_404(User, id=request.user.id)
-        serializer = UserSerializer(user, data=request.data, partial=True)
+        serializer = UserSerializer(
+            request.user,
+            data=request.data,
+            partial=True
+        )
         serializer.is_valid(raise_exception=True)
-        if request.user.is_staff or request.user.role == User.ADMIN:
-            serializer.save()
-        else:
-            serializer.save(role=request.user.role)
+        serializer.save(role=request.user.role)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
