@@ -17,14 +17,10 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 class IsAuthorOrAdminOrModeratorOrReadOnly(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
-        if (
-            request.user.is_anonymous
-            and request.method in permissions.SAFE_METHODS
-        ):
-            return True
+        if request.user.is_anonymous:
+            return request.method in permissions.SAFE_METHODS
         return (
-            request.user.is_authenticated
-            and request.user == obj.author
+            request.user == obj.author
             or request.user.is_moderator
             or request.user.is_admin
         )

@@ -98,7 +98,7 @@ class TitleSerializer(serializers.ModelSerializer):
         read_only_fields = ('__all__',)
 
 
-class TitleCreateSerializer(TitleSerializer):
+class TitleCreateSerializer(serializers.ModelSerializer):
 
     category = serializers.SlugRelatedField(
         slug_field='slug',
@@ -116,5 +116,8 @@ class TitleCreateSerializer(TitleSerializer):
         min_value=0,
         required=True)
 
-    class Meta(TitleSerializer.Meta):
+    class Meta:
+        fields = (
+            'id', 'name', 'year', 'description', 'genre', 'category',
+        )
         model = Title
