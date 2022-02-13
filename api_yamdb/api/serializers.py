@@ -111,11 +111,3 @@ class TitleCreateSerializer(TitleSerializer):
         many=True,
         required=True
     )
-    year = serializers.IntegerField(
-        max_value=datetime.now().year,
-        min_value=0,
-        required=True)
-
-    class Meta(TitleSerializer.Meta):
-        fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
-                  'category',)
