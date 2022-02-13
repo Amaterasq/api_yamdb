@@ -117,4 +117,5 @@ class TitleCreateSerializer(TitleSerializer):
         required=True)
 
     class Meta(TitleSerializer.Meta):
-        model = Title
+        fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
+                  'category',)
