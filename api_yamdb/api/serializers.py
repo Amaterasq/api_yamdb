@@ -115,9 +115,8 @@ class TitleCreateSerializer(serializers.ModelSerializer):
         max_value=datetime.now().year,
         min_value=0,
         required=True)
-    rating = serializers.ReadOnlyField(read_only=True, default=None)
 
     class Meta:
-        fields = ('id', 'name', 'year', 'rating', 'description', 'genre',
+        fields = ('id', 'name', 'year', 'description', 'genre',
                   'category',)
         model = Title
