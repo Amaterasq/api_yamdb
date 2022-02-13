@@ -4,6 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework.views import APIView
+from rest_framework import permissions
 
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.mail import send_mail
@@ -167,7 +168,10 @@ class GenresViewSet(PropertyTitleBaseClass):
 class CommentsViewSet(viewsets.ModelViewSet):
     """Отбираем только нужные комментарии к отзыву"""
     serializer_class = CommentsSerializer
-    permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,)
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsAuthorOrAdminOrModeratorOrReadOnly,
+    )
 
     def get_comment(self):
         return get_object_or_404(Review,
@@ -184,8 +188,10 @@ class CommentsViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     """Отбираем только нужные отзывы к произведению"""
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthorOrAdminOrModeratorOrReadOnly,
-                          )
+    permission_classes = (
+        permissions.IsAuthenticatedOrReadOnly,
+        IsAuthorOrAdminOrModeratorOrReadOnly,
+    )
 
     def get_review(self):
         return get_object_or_404(Title,
