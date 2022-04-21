@@ -37,7 +37,7 @@ pip install -r requirements.txt
 ```
 Перейти в папку приложения
 ```
-cd cpi_yamdb
+cd api_yamdb
 ```
 
 
