@@ -2,7 +2,7 @@
 # 3.7 — используемая версия Python.
 # slim — обозначение того, что образ имеет только необходимые компоненты для запуска,
 # он не будет занимать много места при развёртывании.
-FROM python:3.7
+FROM python:3.7-slim
 
 # Запустить команду создания директории внутри контейнера
 RUN mkdir /app
@@ -22,5 +22,7 @@ COPY api_yamdb/ /app
 WORKDIR /app
 
 # Выполнить запуск сервера разработки при старте контейнера.
-# CMD ["python3", "manage.py", "runserver", "0:8000"]
-CMD ["gunicorn", "api_yamdb.wsgi:application", "--bind", "0:8000" ]
+CMD ["python", "manage.py", "runserver", "0:8000"]
+# CMD ["gunicorn", "api_yamdb.wsgi:application", "--bind", "0:8000" ]
+
+# ENV token 12345
