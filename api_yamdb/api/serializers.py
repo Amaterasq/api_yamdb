@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from datetime import datetime
+
 from reviews.models import Review, Title, Genre, Category, Comment, User
 
 
@@ -96,7 +98,7 @@ class TitleSerializer(serializers.ModelSerializer):
         read_only_fields = ('__all__',)
 
 
-class TitleCreateSerializer(TitleSerializer):
+class TitleCreateSerializer(serializers.ModelSerializer):
 
     category = serializers.SlugRelatedField(
         slug_field='slug',
@@ -109,3 +111,13 @@ class TitleCreateSerializer(TitleSerializer):
         many=True,
         required=True
     )
+    year = serializers.IntegerField(
+        max_value=datetime.now().year,
+        min_value=0,
+        required=True)
+
+    class Meta:
+        fields = (
+            'id', 'name', 'year', 'description', 'genre', 'category',
+        )
+        model = Title
