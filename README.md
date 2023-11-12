@@ -63,31 +63,3 @@ python manage.py runserver
 ```html
  http://127.0.0.1:8000/redoc/
 ```
-
-<br>
-
-## :bust_in_silhouette: Авторы проекта 
-
-### :small_orange_diamond: Влад Перепечко _(Vlad Vi. Perepechko)_
-```html
-e-mail: perepechcko.vlad@ya.ru
-```
-```html
-https://github.com/Amaterasq
-```
-
-### :small_orange_diamond: Алексей Богов _(Alexey Mi. Bogov)_
-```html
-e-mail: bogov-alexey@yandex.ru
-```
-```html
-https://github.com/BogovAlex
-```
-
-### :small_orange_diamond: Светлана  Петрова _(Svetlana Yu. Petrova)_
-```html
-e-mail: master-cim@yandex.ru
-```
-```html
-https://github.com/master-cim
-```
